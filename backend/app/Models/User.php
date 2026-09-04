@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
+use App\Enums\UserRole;
 use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -60,5 +60,10 @@ class User extends Authenticatable
     public function getRoleAttribute(): ?string
     {
         return $this->roles->first()?->name;
+    }
+
+    public function roleEnum(): ?UserRole
+    {
+        return $this->role ? UserRole::from($this->role) : null;
     }
 }

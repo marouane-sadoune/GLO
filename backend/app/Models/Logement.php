@@ -22,7 +22,6 @@ class Logement extends Model
         'location_fr',
         'location_ar',
         'housing_category',
-        'housing_status',
         'notes',
     ];
 
