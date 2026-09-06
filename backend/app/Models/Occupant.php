@@ -4,6 +4,9 @@ namespace App\Models;
 
 use App\Enums\OccupantStatus;
 use App\Enums\OccupationStatus;
+use App\Support\Auditing\Auditable;
+use App\Support\Scoping\Scopeable;
+use App\Support\Scoping\ScopesVisibility;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -11,9 +14,9 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Occupant extends Model
+class Occupant extends Model implements ScopesVisibility
 {
-    use HasFactory, SoftDeletes;
+    use Auditable, HasFactory, Scopeable, SoftDeletes;
 
     protected $fillable = [
         'establishment_id',
@@ -71,6 +74,7 @@ class Occupant extends Model
         if ($this->first_name_ar && $this->last_name_ar) {
             return "{$this->first_name_ar} {$this->last_name_ar}";
         }
+
         return null;
     }
 }

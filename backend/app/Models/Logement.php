@@ -5,6 +5,9 @@ namespace App\Models;
 use App\Enums\HousingCategory;
 use App\Enums\HousingStatus;
 use App\Enums\OccupationStatus;
+use App\Support\Auditing\Auditable;
+use App\Support\Scoping\Scopeable;
+use App\Support\Scoping\ScopesVisibility;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -12,9 +15,9 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Logement extends Model
+class Logement extends Model implements ScopesVisibility
 {
-    use HasFactory, SoftDeletes;
+    use Auditable, HasFactory, Scopeable, SoftDeletes;
 
     protected $fillable = [
         'establishment_id',

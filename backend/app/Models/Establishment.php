@@ -2,15 +2,19 @@
 
 namespace App\Models;
 
+use App\Support\Auditing\Auditable;
+use App\Support\Scoping\Scopeable;
+use App\Support\Scoping\ScopesVisibility;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Establishment extends Model
+class Establishment extends Model implements ScopesVisibility
 {
-    use HasFactory, SoftDeletes;
+    use Auditable, HasFactory, Scopeable, SoftDeletes;
 
     protected $fillable = [
         'department_id',
@@ -39,5 +43,15 @@ class Establishment extends Model
     public function users(): HasMany
     {
         return $this->hasMany(User::class);
+    }
+
+    protected function scopeToDepartment(Builder $query, ?int $departmentId): Builder
+    {
+        return $query->where('department_id', $departmentId);
+    }
+
+    protected function scopeToEstablishment(Builder $query, ?int $establishmentId): Builder
+    {
+        return $query->where('id', $establishmentId);
     }
 }

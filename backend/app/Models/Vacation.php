@@ -2,13 +2,17 @@
 
 namespace App\Models;
 
+use App\Support\Auditing\Auditable;
+use App\Support\Scoping\Scopeable;
+use App\Support\Scoping\ScopesVisibility;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class Vacation extends Model
+class Vacation extends Model implements ScopesVisibility
 {
-    use HasFactory;
+    use Auditable, HasFactory, Scopeable;
 
     protected $fillable = [
         'logement_id',
@@ -40,5 +44,21 @@ class Vacation extends Model
     public function occupant(): BelongsTo
     {
         return $this->belongsTo(Occupant::class);
+    }
+
+    protected function scopeToDepartment(Builder $query, ?int $departmentId): Builder
+    {
+        return $query->whereHas(
+            'logement.establishment',
+            fn (Builder $q) => $q->where('department_id', $departmentId)
+        );
+    }
+
+    protected function scopeToEstablishment(Builder $query, ?int $establishmentId): Builder
+    {
+        return $query->whereHas(
+            'logement',
+            fn (Builder $q) => $q->where('establishment_id', $establishmentId)
+        );
     }
 }

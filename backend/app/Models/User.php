@@ -3,7 +3,10 @@
 namespace App\Models;
 
 use App\Enums\UserRole;
+use App\Support\Scoping\Scopeable;
+use App\Support\Scoping\ScopesVisibility;
 use Database\Factories\UserFactory;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -12,10 +15,10 @@ use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use Spatie\Permission\Traits\HasRoles;
 
-class User extends Authenticatable
+class User extends Authenticatable implements ScopesVisibility
 {
     /** @use HasFactory<UserFactory> */
-    use HasApiTokens, HasFactory, Notifiable, HasRoles;
+    use HasApiTokens, HasFactory, HasRoles, Notifiable, Scopeable;
 
     protected $fillable = [
         'name',
@@ -65,5 +68,10 @@ class User extends Authenticatable
     public function roleEnum(): ?UserRole
     {
         return $this->role ? UserRole::from($this->role) : null;
+    }
+
+    protected function scopeToDepartment(Builder $query, ?int $departmentId): Builder
+    {
+        return $query->where('department_id', $departmentId);
     }
 }
