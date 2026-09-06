@@ -5,10 +5,15 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="fd17090b-0819-439e-b254-48237adbddc8" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/GLO.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/GLO.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/php.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/php.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/app/Http/Controllers/Api/V1/AssignmentRequestController.php" beforeDir="false" afterPath="$PROJECT_DIR$/backend/app/Http/Controllers/Api/V1/AssignmentRequestController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/app/Http/Controllers/Api/V1/OccupationController.php" beforeDir="false" afterPath="$PROJECT_DIR$/backend/app/Http/Controllers/Api/V1/OccupationController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/app/Http/Resources/AssignmentRequestResource.php" beforeDir="false" afterPath="$PROJECT_DIR$/backend/app/Http/Resources/AssignmentRequestResource.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/app/Http/Resources/OccupantResource.php" beforeDir="false" afterPath="$PROJECT_DIR$/backend/app/Http/Resources/OccupantResource.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/app/Http/Resources/OccupationResource.php" beforeDir="false" afterPath="$PROJECT_DIR$/backend/app/Http/Resources/OccupationResource.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/app/Services/AssignmentRequestService.php" beforeDir="false" afterPath="$PROJECT_DIR$/backend/app/Services/AssignmentRequestService.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/app/Services/OccupationService.php" beforeDir="false" afterPath="$PROJECT_DIR$/backend/app/Services/OccupationService.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/tests/Feature/Api/V1/AssignmentWorkflowTest.php" beforeDir="false" afterPath="$PROJECT_DIR$/backend/tests/Feature/Api/V1/AssignmentWorkflowTest.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/tests/Feature/Api/V1/OccupantTest.php" beforeDir="false" afterPath="$PROJECT_DIR$/backend/tests/Feature/Api/V1/OccupantTest.php" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -22,18 +27,18 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
-  <component name="GitHubPullRequestSearchHistory"><![CDATA[{
-  "lastFilter": {
-    "state": "OPEN",
-    "assignee": "marouane-sadoune"
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;marouane-sadoune&quot;
   }
-}]]></component>
-  <component name="GithubPullRequestsUISettings"><![CDATA[{
-  "selectedUrlAndAccountId": {
-    "url": "https://github.com/marouane-sadoune/GLO.git",
-    "accountId": "3fd6567d-7b3c-474f-a01e-d3dcf5c417f6"
+}</component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/marouane-sadoune/GLO.git&quot;,
+    &quot;accountId&quot;: &quot;3fd6567d-7b3c-474f-a01e-d3dcf5c417f6&quot;
   }
-}]]></component>
+}</component>
   <component name="PhpWorkspaceProjectConfiguration" interpreter_name="PHP 8.2">
     <include_path>
       <path value="$PROJECT_DIR$/vendor/psr/clock" />
@@ -107,32 +112,32 @@
       <path value="$PROJECT_DIR$/vendor/composer" />
     </include_path>
   </component>
-  <component name="ProjectColorInfo"><![CDATA[{
-  "associatedIndex": 7,
-  "fromUser": false
-}]]></component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 7,
+  &quot;fromUser&quot;: false
+}</component>
   <component name="ProjectId" id="3IltQlsaOizSCQcgSiXBwiVo3s7" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "ModuleVcsDetector.initialDetectionPerformed": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "RunOnceActivity.typescript.service.memoryLimit.init": "true",
-    "codeWithMe.voiceChat.enabledByDefault": "false",
-    "git-widget-placeholder": "master",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.typescript.service.memoryLimit.init&quot;: &quot;true&quot;,
+    &quot;codeWithMe.voiceChat.enabledByDefault&quot;: &quot;false&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
@@ -149,6 +154,7 @@
       <option name="presentableId" value="Default" />
       <updated>1788350971040</updated>
       <workItem from="1788351488876" duration="5905000" />
+      <workItem from="1788712880446" duration="39000" />
     </task>
     <servers />
   </component>

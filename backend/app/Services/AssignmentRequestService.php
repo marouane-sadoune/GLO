@@ -17,8 +17,7 @@ class AssignmentRequestService
     public function __construct(
         private readonly OccupationService $occupationService,
         private readonly AuditLogger $auditLogger,
-    ) {
-    }
+    ) {}
 
     /**
      * Accepting settles this request and starts the occupation, but per AMB-05

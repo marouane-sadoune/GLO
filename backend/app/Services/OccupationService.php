@@ -22,9 +22,7 @@ use Illuminate\Validation\ValidationException;
  */
 class OccupationService
 {
-    public function __construct(private readonly AuditLogger $auditLogger)
-    {
-    }
+    public function __construct(private readonly AuditLogger $auditLogger) {}
 
     /**
      * @param  array{assignment_date: string, assignment_type: string, start_date: string, notes?: string|null}  $attributes

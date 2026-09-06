@@ -16,9 +16,7 @@ use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 class AssignmentRequestController extends Controller
 {
-    public function __construct(private readonly AssignmentRequestService $service)
-    {
-    }
+    public function __construct(private readonly AssignmentRequestService $service) {}
 
     public function index(Request $request): AnonymousResourceCollection
     {

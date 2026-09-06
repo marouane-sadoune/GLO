@@ -9,6 +9,7 @@ use App\Enums\RequestStatus;
 use App\Models\AssignmentRequest;
 use App\Models\Logement;
 use App\Models\Occupant;
+use App\Models\Occupation;
 use App\Models\User;
 use Database\Seeders\RolePermissionSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -92,7 +93,7 @@ class AssignmentWorkflowTest extends TestCase
     public function test_accepting_a_request_for_an_already_occupied_housing_is_rejected(): void
     {
         $logement = Logement::factory()->create();
-        $existingOccupation = \App\Models\Occupation::factory()->for($logement)->create();
+        $existingOccupation = Occupation::factory()->for($logement)->create();
         $request = AssignmentRequest::factory()->for($logement)->create();
         $admin = User::factory()->superAdmin()->create();
 
@@ -152,7 +153,7 @@ class AssignmentWorkflowTest extends TestCase
     {
         $logement = Logement::factory()->create();
         $logement->forceFill(['housing_status' => HousingStatus::OCCUPIED->value])->save();
-        $occupation = \App\Models\Occupation::factory()->for($logement)->create();
+        $occupation = Occupation::factory()->for($logement)->create();
         $admin = User::factory()->superAdmin()->create();
 
         $this->actingAsUser($admin)
@@ -170,7 +171,7 @@ class AssignmentWorkflowTest extends TestCase
 
     public function test_ending_an_already_ended_occupation_is_rejected(): void
     {
-        $occupation = \App\Models\Occupation::factory()->create([
+        $occupation = Occupation::factory()->create([
             'status' => 'ENDED',
             'end_date' => now()->subDay()->toDateString(),
             'end_reason' => OccupationEndReason::OTHER->value,

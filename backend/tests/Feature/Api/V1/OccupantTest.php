@@ -5,6 +5,7 @@ namespace Tests\Feature\Api\V1;
 use App\Models\AssignmentRequest;
 use App\Models\Department;
 use App\Models\Establishment;
+use App\Models\Logement;
 use App\Models\Occupant;
 use App\Models\User;
 use Database\Seeders\RolePermissionSeeder;
@@ -74,7 +75,7 @@ class OccupantTest extends TestCase
         $housingEstablishment = Establishment::factory()->for($department)->create();
 
         $occupant = Occupant::factory()->for($anchorEstablishment)->create();
-        $logement = \App\Models\Logement::factory()->for($housingEstablishment)->create();
+        $logement = Logement::factory()->for($housingEstablishment)->create();
         AssignmentRequest::factory()->for($logement)->for($occupant)->create([
             'submitted_at' => now()->toDateString(),
         ]);

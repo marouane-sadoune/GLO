@@ -13,9 +13,7 @@ use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 class OccupationController extends Controller
 {
-    public function __construct(private readonly OccupationService $service)
-    {
-    }
+    public function __construct(private readonly OccupationService $service) {}
 
     public function index(Request $request): AnonymousResourceCollection
     {
