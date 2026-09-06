@@ -3,10 +3,12 @@
 use App\Http\Controllers\Api\V1\AssignmentRequestController;
 use App\Http\Controllers\Api\V1\AuthController;
 use App\Http\Controllers\Api\V1\DepartmentController;
+use App\Http\Controllers\Api\V1\DocumentController;
 use App\Http\Controllers\Api\V1\EstablishmentController;
 use App\Http\Controllers\Api\V1\LogementController;
 use App\Http\Controllers\Api\V1\OccupantController;
 use App\Http\Controllers\Api\V1\OccupationController;
+use App\Http\Controllers\Api\V1\VacationController;
 use Illuminate\Support\Facades\Route;
 
 Route::prefix('v1')->group(function (): void {
@@ -21,6 +23,8 @@ Route::prefix('v1')->group(function (): void {
         Route::apiResource('departments', DepartmentController::class);
         Route::apiResource('establishments', EstablishmentController::class);
         Route::apiResource('logements', LogementController::class);
+        Route::get('/logements/{logement}/history', [LogementController::class, 'history'])
+            ->name('logements.history');
         Route::apiResource('occupants', OccupantController::class);
 
         Route::apiResource('assignment-requests', AssignmentRequestController::class)
@@ -35,5 +39,12 @@ Route::prefix('v1')->group(function (): void {
         Route::apiResource('occupations', OccupationController::class)->only(['index', 'show']);
         Route::post('/occupations/{occupation}/end', [OccupationController::class, 'end'])
             ->name('occupations.end');
+
+        Route::apiResource('vacations', VacationController::class)->only(['index', 'show', 'store']);
+
+        Route::apiResource('documents', DocumentController::class)
+            ->only(['index', 'store', 'show', 'destroy']);
+        Route::get('/documents/{document}/download', [DocumentController::class, 'download'])
+            ->name('documents.download');
     });
 });

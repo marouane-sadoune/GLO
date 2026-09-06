@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Filters\LogementFilter;
 use App\Http\Requests\Api\V1\StoreLogementRequest;
 use App\Http\Requests\Api\V1\UpdateLogementRequest;
+use App\Http\Resources\HousingHistoryResource;
 use App\Http\Resources\LogementResource;
 use App\Models\Logement;
 use Illuminate\Http\JsonResponse;
@@ -67,5 +68,20 @@ class LogementController extends Controller
         $this->authorize('delete', $model);
 
         return $this->destroyOrConflict($model);
+    }
+
+    public function history(Request $request, int $logement): AnonymousResourceCollection
+    {
+        $model = Logement::visibleTo($request->user())->findOrFail($logement);
+
+        $this->authorize('view', $model);
+        $this->authorize('viewHistory', $model);
+
+        $history = $model->history()
+            ->with('user')
+            ->orderByDesc('created_at')
+            ->paginate(min((int) $request->integer('per_page', 20), 100));
+
+        return HousingHistoryResource::collection($history);
     }
 }

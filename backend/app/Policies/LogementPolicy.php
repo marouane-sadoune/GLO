@@ -32,6 +32,11 @@ class LogementPolicy
         return $user->can('logements.delete') && $this->inScope($user, $logement);
     }
 
+    public function viewHistory(User $user, Logement $logement): bool
+    {
+        return $user->can('history.view') && $this->inScope($user, $logement);
+    }
+
     private function inScope(User $user, Logement $logement): bool
     {
         return Logement::visibleTo($user)->whereKey($logement->id)->exists();
