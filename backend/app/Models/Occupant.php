@@ -7,6 +7,7 @@ use App\Enums\OccupationStatus;
 use App\Support\Auditing\Auditable;
 use App\Support\Scoping\Scopeable;
 use App\Support\Scoping\ScopesVisibility;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -76,5 +77,26 @@ class Occupant extends Model implements ScopesVisibility
         }
 
         return null;
+    }
+
+    /**
+     * AMB-03: an occupant is visible via their anchor establishment, or via any
+     * occupation/request that puts them inside the scope, so a newly registered
+     * occupant with no occupation yet isn't invisible to their own creator.
+     */
+    protected function scopeToDepartment(Builder $query, ?int $departmentId): Builder
+    {
+        return $query->where(fn (Builder $q) => $q
+            ->whereHas('establishment', fn (Builder $q2) => $q2->where('department_id', $departmentId))
+            ->orWhereHas('occupations.logement.establishment', fn (Builder $q2) => $q2->where('department_id', $departmentId))
+            ->orWhereHas('assignmentRequests.logement.establishment', fn (Builder $q2) => $q2->where('department_id', $departmentId)));
+    }
+
+    protected function scopeToEstablishment(Builder $query, ?int $establishmentId): Builder
+    {
+        return $query->where(fn (Builder $q) => $q
+            ->where('establishment_id', $establishmentId)
+            ->orWhereHas('occupations.logement', fn (Builder $q2) => $q2->where('establishment_id', $establishmentId))
+            ->orWhereHas('assignmentRequests.logement', fn (Builder $q2) => $q2->where('establishment_id', $establishmentId)));
     }
 }
