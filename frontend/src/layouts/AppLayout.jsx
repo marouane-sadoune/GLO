@@ -33,8 +33,8 @@ export function AppLayout() {
   const { t, locale, setLocale } = useI18n()
 
   return (
-    <div className="flex min-h-screen bg-slate-50">
-      <aside className="hidden w-64 shrink-0 border-e border-slate-200 bg-white p-4 sm:block">
+    <div className="flex min-h-screen">
+      <aside className="app-sidebar hidden w-64 shrink-0 border-e border-slate-200 p-4 sm:block">
         <div className="mb-6 px-2 text-lg font-bold text-indigo-600">{t('app.name')}</div>
         <nav className="space-y-1">
           {NAV_ITEMS.map((item) =>

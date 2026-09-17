@@ -12,6 +12,15 @@ body,
 
 body {
   @apply bg-slate-50 text-slate-900 antialiased;
+  background-image: url('./assets/body-bg.png');
+  background-size: cover;
+  background-position: center;
+}
+
+.app-sidebar {
+  background-image: url('./assets/side-bar.png');
+  background-size: cover;
+  background-position: center;
 }
 
 [dir='rtl'] .flip-rtl {

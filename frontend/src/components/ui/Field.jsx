@@ -9,19 +9,19 @@ export function Field({ label, error, children }) {
 }
 
 const inputClass =
-  'block w-full rounded-md border-0 px-3 py-2 text-sm text-slate-900 ring-1 ring-inset ring-slate-300 placeholder:text-slate-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600'
+  'block w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 ring-0 placeholder:text-slate-400 focus:border-indigo-600 focus:ring-2 focus:ring-indigo-600'
 
-export function Input(props) {
-  return <input className={inputClass} {...props} />
+export function Input({ className = '', ...props }) {
+  return <input className={`${inputClass} ${className}`} {...props} />
 }
 
-export function Textarea(props) {
-  return <textarea className={inputClass} rows={3} {...props} />
+export function Textarea({ className = '', ...props }) {
+  return <textarea className={`${inputClass} ${className}`} rows={3} {...props} />
 }
 
-export function Select({ children, ...props }) {
+export function Select({ children, className = '', ...props }) {
   return (
-    <select className={inputClass} {...props}>
+    <select className={`${inputClass} ${className}`} {...props}>
       {children}
     </select>
   )
