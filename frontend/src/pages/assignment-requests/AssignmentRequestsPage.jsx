@@ -1,6 +1,8 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { useState } from 'react'
 import { assignmentRequestsApi } from '../../api/assignmentRequests'
+import { logementsApi } from '../../api/logements'
+import { occupantsApi } from '../../api/occupants'
 import { Can } from '../../auth/Can'
 import { Badge } from '../../components/ui/Badge'
 import { Button } from '../../components/ui/Button'
@@ -82,15 +84,86 @@ function AcceptModal({ request, onClose, onDone }) {
   )
 }
 
+function CreateRequestModal({ logements, occupants, onClose, onDone }) {
+  const { t } = useI18n()
+  const toast = useToast()
+  const [form, setForm] = useState({ logement_id: '', occupant_id: '', notes: '' })
+  const create = useMutation({
+    mutationFn: () => assignmentRequestsApi.create(form),
+    onSuccess: () => {
+      toast.success(t('common.send'))
+      onDone()
+    },
+    onError: () => toast.error(t('common.error')),
+  })
+
+  return (
+    <Modal
+      open
+      onClose={onClose}
+      title={t('request.new')}
+      footer={
+        <>
+          <Button variant="secondary" onClick={onClose}>
+            {t('common.cancel')}
+          </Button>
+          <Button onClick={() => create.mutate()} disabled={create.isPending || !form.logement_id || !form.occupant_id}>
+            {t('common.send')}
+          </Button>
+        </>
+      }
+    >
+      <div className="space-y-4">
+        <Field label={t('request.occupant')}>
+          <Select
+            required
+            value={form.occupant_id}
+            onChange={(e) => setForm({ ...form, occupant_id: e.target.value })}
+          >
+            <option value="">{t('common.select')}</option>
+            {occupants?.data?.map((occupant) => (
+              <option key={occupant.id} value={occupant.id}>
+                {occupant.full_name_fr} ({occupant.employee_number})
+              </option>
+            ))}
+          </Select>
+        </Field>
+        <Field label={t('request.logement')}>
+          <Select
+            required
+            value={form.logement_id}
+            onChange={(e) => setForm({ ...form, logement_id: e.target.value })}
+          >
+            <option value="">{t('common.select')}</option>
+            {logements?.data?.map((logement) => (
+              <option key={logement.id} value={logement.id}>
+                {logement.inventory_number} - {logement.location_fr}
+              </option>
+            ))}
+          </Select>
+        </Field>
+        <Field label={t('common.notes')}>
+          <Input value={form.notes} onChange={(e) => setForm({ ...form, notes: e.target.value })} />
+        </Field>
+      </div>
+    </Modal>
+  )
+}
+
 export function AssignmentRequestsPage() {
   const { t } = useI18n()
   const toast = useToast()
   const [page, setPage] = useState(1)
   const [status, setStatus] = useState('')
   const [acceptTarget, setAcceptTarget] = useState(null)
+  const [createOpen, setCreateOpen] = useState(false)
 
   const { useList } = useResourceQueries('assignment-requests', assignmentRequestsApi)
   const { data, isLoading } = useList({ page, status: status || undefined })
+  const { useList: useLogements } = useResourceQueries('logements', logementsApi)
+  const { useList: useOccupants } = useResourceQueries('occupants', occupantsApi)
+  const { data: logements } = useLogements({ per_page: 100, housing_status: 'VACANT' })
+  const { data: occupants } = useOccupants({ per_page: 100 })
 
   const queryClient = useQueryClient()
   const invalidate = () => queryClient.invalidateQueries({ queryKey: ['assignment-requests'] })
@@ -113,6 +186,16 @@ export function AssignmentRequestsPage() {
     onError: () => toast.error(t('common.error')),
   })
 
+  const downloadPdf = useMutation({
+    mutationFn: (id) => assignmentRequestsApi.pdf(id),
+    onSuccess: (blob) => {
+      const url = URL.createObjectURL(blob)
+      window.open(url, '_blank', 'noopener,noreferrer')
+      window.setTimeout(() => URL.revokeObjectURL(url), 60_000)
+    },
+    onError: () => toast.error(t('common.error')),
+  })
+
   const columns = [
     { key: 'logement', header: t('request.logement'), render: (row) => row.logement?.inventory_number },
     { key: 'occupant', header: t('request.occupant'), render: (row) => row.occupant?.full_name_fr },
@@ -126,8 +209,8 @@ export function AssignmentRequestsPage() {
       key: 'actions',
       header: t('common.actions'),
       render: (row) => (
-        <Can permission="requests.decide">
-          <div className="flex gap-2">
+        <div className="flex gap-2">
+          <Can permission="requests.decide">
             {row.status === 'PENDING' ? (
               <>
                 <Button variant="secondary" onClick={() => setAcceptTarget(row)}>
@@ -143,15 +226,25 @@ export function AssignmentRequestsPage() {
                 {t('common.reset')}
               </Button>
             ) : null}
-          </div>
-        </Can>
+          </Can>
+          {row.status === 'ACCEPTED' ? (
+            <Button variant="secondary" onClick={() => downloadPdf.mutate(row.id)} disabled={downloadPdf.isPending}>
+              {t('common.downloadLetter')}
+            </Button>
+          ) : null}
+        </div>
       ),
     },
   ]
 
   return (
     <div className="space-y-4">
-      <h1 className="text-xl font-semibold text-slate-900">{t('nav.requests')}</h1>
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <h1 className="text-xl font-semibold text-slate-900">{t('nav.requests')}</h1>
+        <Can permission="requests.create">
+          <Button onClick={() => setCreateOpen(true)}>{t('request.new')}</Button>
+        </Can>
+      </div>
 
       <Select value={status} onChange={(e) => setStatus(e.target.value)} className="max-w-40">
         <option value="">{t('common.all')}</option>
@@ -168,6 +261,14 @@ export function AssignmentRequestsPage() {
           request={acceptTarget}
           onClose={() => setAcceptTarget(null)}
           onDone={() => setAcceptTarget(null)}
+        />
+      ) : null}
+      {createOpen ? (
+        <CreateRequestModal
+          logements={logements}
+          occupants={occupants}
+          onClose={() => setCreateOpen(false)}
+          onDone={() => setCreateOpen(false)}
         />
       ) : null}
     </div>

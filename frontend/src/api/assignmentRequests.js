@@ -9,4 +9,6 @@ export const assignmentRequestsApi = {
     apiClient.post(`/api/v1/assignment-requests/${id}/reject`, payload).then((r) => r.data.data),
   reset: (id) =>
     apiClient.post(`/api/v1/assignment-requests/${id}/reset`).then((r) => r.data.data),
+  pdf: (id) =>
+    apiClient.get(`/api/v1/assignment-requests/${id}/pdf`, { responseType: 'blob' }).then((r) => r.data),
 }

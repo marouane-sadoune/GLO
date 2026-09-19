@@ -29,6 +29,8 @@ Route::prefix('v1')->group(function (): void {
 
         Route::apiResource('assignment-requests', AssignmentRequestController::class)
             ->only(['index', 'show', 'store']);
+        Route::get('/assignment-requests/{assignmentRequest}/pdf', [AssignmentRequestController::class, 'pdf'])
+            ->name('assignment-requests.pdf');
         Route::post('/assignment-requests/{assignmentRequest}/accept', [AssignmentRequestController::class, 'accept'])
             ->name('assignment-requests.accept');
         Route::post('/assignment-requests/{assignmentRequest}/reject', [AssignmentRequestController::class, 'reject'])

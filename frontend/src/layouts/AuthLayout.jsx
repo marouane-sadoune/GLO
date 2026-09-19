@@ -1,5 +1,6 @@
 import { Outlet } from 'react-router-dom'
 import { useI18n } from '../i18n/I18nContext'
+import logoGlo from '../assets/logo_glo.png'
 
 export function AuthLayout() {
   const { t, locale, setLocale } = useI18n()
@@ -9,7 +10,7 @@ export function AuthLayout() {
       <div className="w-full max-w-sm">
         <div className="mb-6 flex items-center justify-between">
           <div>
-            <h1 className="text-2xl font-bold text-indigo-600">{t('app.name')}</h1>
+            <img src={logoGlo} alt={t('app.name')} className="h-24 w-auto" />
             <p className="text-sm text-slate-500">{t('app.title')}</p>
           </div>
           <button

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api\V1;
 
+use App\Enums\RequestStatus;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\V1\AcceptAssignmentRequestRequest;
 use App\Http\Requests\Api\V1\RejectAssignmentRequestRequest;
@@ -10,9 +11,11 @@ use App\Http\Resources\AssignmentRequestResource;
 use App\Http\Resources\OccupationResource;
 use App\Models\AssignmentRequest;
 use App\Services\AssignmentRequestService;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use Symfony\Component\HttpFoundation\Response;
 
 class AssignmentRequestController extends Controller
 {
@@ -57,6 +60,27 @@ class AssignmentRequestController extends Controller
         $this->authorize('view', $model);
 
         return AssignmentRequestResource::make($model);
+    }
+
+    public function pdf(Request $request, int $assignmentRequest): Response
+    {
+        $model = AssignmentRequest::visibleTo($request->user())
+            ->with(['logement.establishment', 'occupant.establishment'])
+            ->findOrFail($assignmentRequest);
+
+        $this->authorize('view', $model);
+
+        abort_unless($model->status === RequestStatus::ACCEPTED, 422, 'Only accepted assignment requests can generate an approval letter.');
+
+        $headerPath = public_path('images/header.png');
+        abort_unless(is_file($headerPath), 500, 'The PDF header image is missing.');
+
+        return Pdf::loadView('pdf.housing_approval', [
+            'assignment' => $model,
+            'headerImage' => base64_encode((string) file_get_contents($headerPath)),
+        ])
+            ->setPaper('a4')
+            ->download("housing-approval-{$model->id}.pdf");
     }
 
     public function accept(AcceptAssignmentRequestRequest $request, int $assignmentRequest): JsonResponse

@@ -37,6 +37,9 @@
   "common.reset": "Réinitialiser",
   "common.end": "Mettre fin",
   "common.history": "Historique",
+  "common.downloadLetter": "Télécharger la décision",
+  "common.send": "Envoyer",
+  "common.select": "Sélectionner",
 
   "auth.email": "Adresse e-mail",
   "auth.password": "Mot de passe",
@@ -94,6 +97,7 @@
   "request.submitted_at": "Déposée le",
   "request.decision_date": "Décidée le",
   "request.status": "Statut",
+  "request.new": "Nouvelle demande",
 
   "requestStatus.PENDING": "En attente",
   "requestStatus.ACCEPTED": "Accepté",

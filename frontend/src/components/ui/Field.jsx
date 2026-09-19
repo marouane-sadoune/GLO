@@ -9,7 +9,7 @@ export function Field({ label, error, children }) {
 }
 
 const inputClass =
-  'block w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 ring-0 placeholder:text-slate-400 focus:border-indigo-600 focus:ring-2 focus:ring-indigo-600'
+  'block w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 ring-0 placeholder:text-slate-400 focus:border-sky-600 focus:ring-2 focus:ring-sky-600'
 
 export function Input({ className = '', ...props }) {
   return <input className={`${inputClass} ${className}`} {...props} />

@@ -106,7 +106,7 @@ export function LogementDetailPage() {
               onClick={() => setTab(key)}
               className={
                 'border-b-2 px-1 py-2 text-sm font-medium ' +
-                (tab === key ? 'border-indigo-600 text-indigo-600' : 'border-transparent text-slate-500')
+                (tab === key ? 'border-sky-600 text-sky-600' : 'border-transparent text-slate-500')
               }
             >
               {t(key === 'info' ? 'common.details' : 'common.history')}

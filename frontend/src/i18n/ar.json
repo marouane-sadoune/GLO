@@ -37,6 +37,9 @@
   "common.reset": "إعادة تعيين",
   "common.end": "إنهاء",
   "common.history": "السجل",
+  "common.downloadLetter": "تحميل قرار الموافقة",
+  "common.send": "إرسال",
+  "common.select": "اختيار",
 
   "auth.email": "البريد الإلكتروني",
   "auth.password": "كلمة المرور",
@@ -94,6 +97,7 @@
   "request.submitted_at": "تاريخ الإيداع",
   "request.decision_date": "تاريخ القرار",
   "request.status": "الحالة",
+  "request.new": "طلب جديد",
 
   "requestStatus.PENDING": "في طور المعالجة",
   "requestStatus.ACCEPTED": "مقبول",

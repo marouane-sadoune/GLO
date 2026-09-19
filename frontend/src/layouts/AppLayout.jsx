@@ -21,7 +21,7 @@ function NavItem({ to, label, end }) {
       end={end}
       className={({ isActive }) =>
         'block rounded-md px-3 py-2 text-sm font-medium transition ' +
-        (isActive ? 'bg-indigo-600 text-white' : 'text-slate-600 hover:bg-slate-100')
+        (isActive ? 'bg-sky-600 text-white' : 'text-slate-600 hover:bg-slate-100')
       }
     >
       {label}
@@ -36,8 +36,8 @@ export function AppLayout() {
   return (
     <div className="flex min-h-screen">
       <aside className="app-sidebar hidden w-64 shrink-0 border-e border-slate-200 p-4 sm:block">
-        <div className="mb-6 px-2">
-          <img src={logoGlo} alt={t('app.name')} className="h-10 w-auto" />
+        <div className="mb-5 px-13 py-5">
+          <img src={logoGlo} alt={t('app.name')} className="h-auto w-auto" />
         </div>
         <nav className="space-y-1">
           {NAV_ITEMS.map((item) =>
