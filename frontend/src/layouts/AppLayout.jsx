@@ -1,8 +1,8 @@
 import { useState } from 'react'
 import { NavLink, Outlet } from 'react-router-dom'
-import { useAuth } from '../auth/AuthContext'
 import { Can } from '../auth/Can'
 import { ChangePasswordModal } from '../components/ChangePasswordModal'
+import { ProfileMenu } from '../components/ProfileMenu'
 import { useI18n } from '../i18n/I18nContext'
 import logoGlo from '../assets/logo_glo.png'
 
@@ -33,7 +33,6 @@ function NavItem({ to, label, end }) {
 }
 
 export function AppLayout() {
-  const { user, logout } = useAuth()
   const { t, locale, setLocale } = useI18n()
   const [changePasswordOpen, setChangePasswordOpen] = useState(false)
 
@@ -57,8 +56,7 @@ export function AppLayout() {
       </aside>
 
       <div className="flex min-h-screen flex-1 flex-col">
-        <header className="flex items-center justify-between border-b border-slate-200 bg-white px-6 py-3">
-          <div className="text-sm text-slate-500">{user ? t(`role.${user.role}`) : null}</div>
+        <header className="flex items-center justify-end border-b border-slate-200 bg-white px-6 py-3">
           <div className="flex items-center gap-4">
             <button
               type="button"
@@ -67,17 +65,7 @@ export function AppLayout() {
             >
               {locale === 'fr' ? 'العربية' : 'Français'}
             </button>
-            <span className="text-sm font-medium text-slate-800">{user?.name}</span>
-            <button
-              type="button"
-              onClick={() => setChangePasswordOpen(true)}
-              className="text-sm text-slate-500 hover:text-slate-800"
-            >
-              {t('user.changePassword')}
-            </button>
-            <button type="button" onClick={logout} className="text-sm text-slate-500 hover:text-slate-800">
-              {t('nav.logout')}
-            </button>
+            <ProfileMenu onChangePassword={() => setChangePasswordOpen(true)} />
           </div>
         </header>
 
