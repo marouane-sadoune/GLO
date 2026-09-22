@@ -8,6 +8,7 @@ use App\Http\Controllers\Api\V1\EstablishmentController;
 use App\Http\Controllers\Api\V1\LogementController;
 use App\Http\Controllers\Api\V1\OccupantController;
 use App\Http\Controllers\Api\V1\OccupationController;
+use App\Http\Controllers\Api\V1\UserController;
 use App\Http\Controllers\Api\V1\VacationController;
 use Illuminate\Support\Facades\Route;
 
@@ -19,7 +20,9 @@ Route::prefix('v1')->group(function (): void {
     Route::middleware(['auth:sanctum', 'active'])->group(function (): void {
         Route::post('/logout', [AuthController::class, 'logout'])->name('api.v1.logout');
         Route::get('/me', [AuthController::class, 'me'])->name('api.v1.me');
+        Route::put('/me/password', [AuthController::class, 'updatePassword'])->name('api.v1.me.password');
 
+        Route::apiResource('users', UserController::class)->only(['index', 'store', 'update', 'destroy']);
         Route::apiResource('departments', DepartmentController::class);
         Route::apiResource('establishments', EstablishmentController::class);
         Route::apiResource('logements', LogementController::class);

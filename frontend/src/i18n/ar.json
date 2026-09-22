@@ -9,6 +9,7 @@
   "nav.occupants": "المستفيدون",
   "nav.requests": "طلبات التخصيص",
   "nav.occupations": "الإشغالات",
+  "nav.users": "المستخدمون",
   "nav.logout": "تسجيل الخروج",
 
   "common.save": "حفظ",
@@ -110,6 +111,21 @@
 
   "occupationStatus.ACTIVE": "نشطة",
   "occupationStatus.ENDED": "منتهية",
+
+  "user.name": "الاسم",
+  "user.email": "البريد الإلكتروني",
+  "user.password": "كلمة المرور",
+  "user.passwordPlaceholder": "اتركه فارغاً لعدم التغيير",
+  "user.role": "الدور",
+  "user.department": "المديرية",
+  "user.establishment": "المؤسسة",
+  "user.active": "نشط",
+  "user.inactive": "غير نشط",
+  "user.changePassword": "تغيير كلمة المرور",
+  "user.currentPassword": "كلمة المرور الحالية",
+  "user.newPassword": "كلمة المرور الجديدة",
+  "user.confirmPassword": "تأكيد كلمة المرور",
+  "user.passwordUpdated": "تم تحديث كلمة المرور.",
 
   "dashboard.welcome": "مرحباً، {name}",
   "dashboard.role": "الدور: {role}"

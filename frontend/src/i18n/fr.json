@@ -9,6 +9,7 @@
   "nav.occupants": "Occupants",
   "nav.requests": "Demandes d'affectation",
   "nav.occupations": "Occupations",
+  "nav.users": "Utilisateurs",
   "nav.logout": "Déconnexion",
 
   "common.save": "Enregistrer",
@@ -110,6 +111,21 @@
 
   "occupationStatus.ACTIVE": "Active",
   "occupationStatus.ENDED": "Terminée",
+
+  "user.name": "Nom",
+  "user.email": "E-mail",
+  "user.password": "Mot de passe",
+  "user.passwordPlaceholder": "Laisser vide pour ne pas changer",
+  "user.role": "Rôle",
+  "user.department": "Département",
+  "user.establishment": "Établissement",
+  "user.active": "Actif",
+  "user.inactive": "Inactif",
+  "user.changePassword": "Changer le mot de passe",
+  "user.currentPassword": "Mot de passe actuel",
+  "user.newPassword": "Nouveau mot de passe",
+  "user.confirmPassword": "Confirmer le mot de passe",
+  "user.passwordUpdated": "Mot de passe mis à jour.",
 
   "dashboard.welcome": "Bienvenue, {name}",
   "dashboard.role": "Rôle : {role}"

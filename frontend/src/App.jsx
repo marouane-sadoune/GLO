@@ -17,6 +17,7 @@ import { LogementsPage } from './pages/logements/LogementsPage'
 import { NotFoundPage } from './pages/NotFoundPage'
 import { OccupantsPage } from './pages/occupants/OccupantsPage'
 import { OccupationsPage } from './pages/occupations/OccupationsPage'
+import { UsersPage } from './pages/users/UsersPage'
 
 export default function App() {
   return (
@@ -42,6 +43,7 @@ export default function App() {
                     <Route path="/occupants" element={<OccupantsPage />} />
                     <Route path="/assignment-requests" element={<AssignmentRequestsPage />} />
                     <Route path="/occupations" element={<OccupationsPage />} />
+                    <Route path="/users" element={<UsersPage />} />
                   </Route>
                 </Route>
 

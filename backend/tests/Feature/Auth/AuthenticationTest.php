@@ -6,6 +6,7 @@ use App\Enums\UserRole;
 use App\Models\User;
 use Database\Seeders\RolePermissionSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Hash;
 use Tests\TestCase;
 
 class AuthenticationTest extends TestCase
@@ -117,6 +118,39 @@ class AuthenticationTest extends TestCase
             ->fromFrontend()
             ->getJson('/api/v1/me')
             ->assertForbidden();
+    }
+
+    public function test_user_can_change_their_own_password(): void
+    {
+        $user = User::factory()->superAdmin()->create(['password' => 'old-password']);
+
+        $this->actingAsUser($user)
+            ->fromFrontend()
+            ->putJson('/api/v1/me/password', [
+                'current_password' => 'old-password',
+                'password' => 'new-password',
+                'password_confirmation' => 'new-password',
+            ])
+            ->assertOk();
+
+        $this->assertTrue(Hash::check('new-password', $user->fresh()->password));
+    }
+
+    public function test_changing_password_requires_the_correct_current_password(): void
+    {
+        $user = User::factory()->superAdmin()->create(['password' => 'old-password']);
+
+        $this->actingAsUser($user)
+            ->fromFrontend()
+            ->putJson('/api/v1/me/password', [
+                'current_password' => 'wrong-password',
+                'password' => 'new-password',
+                'password_confirmation' => 'new-password',
+            ])
+            ->assertUnprocessable()
+            ->assertJsonValidationErrors(['current_password']);
+
+        $this->assertTrue(Hash::check('old-password', $user->fresh()->password));
     }
 
     public function test_logout_clears_the_session(): void

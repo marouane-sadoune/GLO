@@ -15,3 +15,8 @@ export async function fetchMe() {
   const { data } = await apiClient.get('/api/v1/me')
   return data.data
 }
+
+export async function updatePassword(payload) {
+  const { data } = await apiClient.put('/api/v1/me/password', payload)
+  return data
+}

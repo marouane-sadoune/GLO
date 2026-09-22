@@ -1,6 +1,8 @@
+import { useState } from 'react'
 import { NavLink, Outlet } from 'react-router-dom'
 import { useAuth } from '../auth/AuthContext'
 import { Can } from '../auth/Can'
+import { ChangePasswordModal } from '../components/ChangePasswordModal'
 import { useI18n } from '../i18n/I18nContext'
 import logoGlo from '../assets/logo_glo.png'
 
@@ -12,6 +14,7 @@ const NAV_ITEMS = [
   { to: '/occupants', label: 'nav.occupants', permission: 'occupants.view' },
   { to: '/assignment-requests', label: 'nav.requests', permission: 'requests.view' },
   { to: '/occupations', label: 'nav.occupations', permission: 'occupations.view' },
+  { to: '/users', label: 'nav.users', permission: 'users.view' },
 ]
 
 function NavItem({ to, label, end }) {
@@ -32,6 +35,7 @@ function NavItem({ to, label, end }) {
 export function AppLayout() {
   const { user, logout } = useAuth()
   const { t, locale, setLocale } = useI18n()
+  const [changePasswordOpen, setChangePasswordOpen] = useState(false)
 
   return (
     <div className="flex min-h-screen">
@@ -64,6 +68,13 @@ export function AppLayout() {
               {locale === 'fr' ? 'العربية' : 'Français'}
             </button>
             <span className="text-sm font-medium text-slate-800">{user?.name}</span>
+            <button
+              type="button"
+              onClick={() => setChangePasswordOpen(true)}
+              className="text-sm text-slate-500 hover:text-slate-800"
+            >
+              {t('user.changePassword')}
+            </button>
             <button type="button" onClick={logout} className="text-sm text-slate-500 hover:text-slate-800">
               {t('nav.logout')}
             </button>
@@ -74,6 +85,8 @@ export function AppLayout() {
           <Outlet />
         </main>
       </div>
+
+      {changePasswordOpen ? <ChangePasswordModal onClose={() => setChangePasswordOpen(false)} /> : null}
     </div>
   )
 }

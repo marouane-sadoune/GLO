@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\V1\LoginRequest;
+use App\Http\Requests\Api\V1\UpdatePasswordRequest;
 use App\Http\Resources\UserResource;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
@@ -61,6 +62,13 @@ class AuthController extends Controller
     public function me(Request $request): JsonResponse
     {
         return $this->userPayload($request->user());
+    }
+
+    public function updatePassword(UpdatePasswordRequest $request): JsonResponse
+    {
+        $request->user()->forceFill(['password' => $request->string('password')->toString()])->save();
+
+        return response()->json(['message' => 'Mot de passe mis à jour.']);
     }
 
     private function userPayload(User $user): JsonResponse
