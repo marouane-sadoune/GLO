@@ -15,7 +15,8 @@ import { useToast } from '../../components/ui/Toast'
 import { useResourceQueries } from '../../hooks/useResource'
 import { useI18n } from '../../i18n/I18nContext'
 
-const ROLES = ['SUPER_ADMIN', 'DEPARTMENT_ADMIN', 'ESTABLISHMENT_MANAGER']
+const ROLES = ['SUPER_ADMIN', 'DP_AGENT', 'ESTABLISHMENT_MANAGER', 'AREF_VALIDATOR', 'AREF_DIRECTOR']
+const REGION_WIDE_ROLES = ['SUPER_ADMIN', 'AREF_VALIDATOR', 'AREF_DIRECTOR']
 
 const EMPTY_FORM = {
   name: '',
@@ -29,7 +30,7 @@ const EMPTY_FORM = {
 
 function toPayload(form) {
   const payload = { ...form }
-  if (payload.role === 'SUPER_ADMIN') payload.department_id = ''
+  if (REGION_WIDE_ROLES.includes(payload.role)) payload.department_id = ''
   if (payload.role !== 'ESTABLISHMENT_MANAGER') payload.establishment_id = ''
   if (!payload.password) delete payload.password
   return payload
@@ -88,7 +89,7 @@ function UserFormModal({ title, initial, departments, establishments, onClose, o
             ))}
           </Select>
         </Field>
-        {form.role !== 'SUPER_ADMIN' ? (
+        {!REGION_WIDE_ROLES.includes(form.role) ? (
           <Field label={t('user.department')}>
             <Select
               required

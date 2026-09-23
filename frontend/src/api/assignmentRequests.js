@@ -3,6 +3,8 @@ import { createResourceApi } from './resource'
 
 export const assignmentRequestsApi = {
   ...createResourceApi('assignment-requests'),
+  verify: (id, payload) =>
+    apiClient.post(`/api/v1/assignment-requests/${id}/verify`, payload).then((r) => r.data.data),
   accept: (id, payload) =>
     apiClient.post(`/api/v1/assignment-requests/${id}/accept`, payload).then((r) => r.data),
   reject: (id, payload) =>

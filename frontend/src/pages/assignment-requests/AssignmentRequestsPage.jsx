@@ -1,8 +1,10 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { useState } from 'react'
 import { assignmentRequestsApi } from '../../api/assignmentRequests'
+import { documentsApi } from '../../api/documents'
 import { logementsApi } from '../../api/logements'
 import { occupantsApi } from '../../api/occupants'
+import { useAuth } from '../../auth/AuthContext'
 import { Can } from '../../auth/Can'
 import { Badge } from '../../components/ui/Badge'
 import { Button } from '../../components/ui/Button'
@@ -14,7 +16,8 @@ import { useToast } from '../../components/ui/Toast'
 import { useResourceQueries } from '../../hooks/useResource'
 import { useI18n } from '../../i18n/I18nContext'
 
-const STATUS_TONE = { PENDING: 'amber', ACCEPTED: 'green', REJECTED: 'red' }
+const STATUS_TONE = { PENDING: 'amber', VERIFIED: 'blue', ACCEPTED: 'green', REJECTED: 'red' }
+const DOCUMENT_TYPES = ['ASSIGNMENT_ORDER', 'COMMITTEE_MINUTES', 'COMMITMENT', 'INSPECTION_CARD', 'NOTIFICATION', 'OTHER']
 
 function AcceptModal({ request, onClose, onDone }) {
   const { t } = useI18n()
@@ -88,8 +91,26 @@ function CreateRequestModal({ logements, occupants, onClose, onDone }) {
   const { t } = useI18n()
   const toast = useToast()
   const [form, setForm] = useState({ logement_id: '', occupant_id: '', notes: '' })
+  const [documents, setDocuments] = useState([{ type: 'COMMITMENT', file: null }])
+
+  const addDocumentRow = () => setDocuments([...documents, { type: 'COMMITMENT', file: null }])
+  const removeDocumentRow = (index) => setDocuments(documents.filter((_, i) => i !== index))
+  const updateDocumentRow = (index, patch) =>
+    setDocuments(documents.map((doc, i) => (i === index ? { ...doc, ...patch } : doc)))
+
   const create = useMutation({
-    mutationFn: () => assignmentRequestsApi.create(form),
+    mutationFn: async () => {
+      await assignmentRequestsApi.create(form)
+
+      for (const doc of documents) {
+        if (!doc.file) continue
+        const data = new FormData()
+        data.append('file', doc.file)
+        data.append('type', doc.type)
+        data.append('occupant_id', form.occupant_id)
+        await documentsApi.upload(data)
+      }
+    },
     onSuccess: () => {
       toast.success(t('common.send'))
       onDone()
@@ -145,6 +166,40 @@ function CreateRequestModal({ logements, occupants, onClose, onDone }) {
         <Field label={t('common.notes')}>
           <Input value={form.notes} onChange={(e) => setForm({ ...form, notes: e.target.value })} />
         </Field>
+
+        <div className="space-y-2 border-t border-slate-200 pt-4">
+          <div className="flex items-center justify-between">
+            <span className="text-sm font-medium text-slate-700">{t('request.documents')}</span>
+            <Button type="button" variant="secondary" onClick={addDocumentRow}>
+              {t('request.addDocument')}
+            </Button>
+          </div>
+          {documents.map((doc, index) => (
+            <div key={index} className="flex items-center gap-2">
+              <Select
+                className="max-w-48"
+                value={doc.type}
+                onChange={(e) => updateDocumentRow(index, { type: e.target.value })}
+              >
+                {DOCUMENT_TYPES.map((type) => (
+                  <option key={type} value={type}>
+                    {t(`documentType.${type}`)}
+                  </option>
+                ))}
+              </Select>
+              <Input
+                type="file"
+                accept=".pdf,.jpg,.jpeg,.png,.doc,.docx"
+                onChange={(e) => updateDocumentRow(index, { file: e.target.files?.[0] ?? null })}
+              />
+              {documents.length > 1 ? (
+                <Button type="button" variant="danger" onClick={() => removeDocumentRow(index)}>
+                  {t('common.delete')}
+                </Button>
+              ) : null}
+            </div>
+          ))}
+        </div>
       </div>
     </Modal>
   )
@@ -152,6 +207,7 @@ function CreateRequestModal({ logements, occupants, onClose, onDone }) {
 
 export function AssignmentRequestsPage() {
   const { t } = useI18n()
+  const { can } = useAuth()
   const toast = useToast()
   const [page, setPage] = useState(1)
   const [status, setStatus] = useState('')
@@ -167,6 +223,15 @@ export function AssignmentRequestsPage() {
 
   const queryClient = useQueryClient()
   const invalidate = () => queryClient.invalidateQueries({ queryKey: ['assignment-requests'] })
+
+  const verify = useMutation({
+    mutationFn: (id) => assignmentRequestsApi.verify(id, {}),
+    onSuccess: () => {
+      invalidate()
+      toast.success(t('common.verify'))
+    },
+    onError: () => toast.error(t('common.error')),
+  })
 
   const reject = useMutation({
     mutationFn: (id) => assignmentRequestsApi.reject(id, {}),
@@ -210,23 +275,36 @@ export function AssignmentRequestsPage() {
       header: t('common.actions'),
       render: (row) => (
         <div className="flex gap-2">
-          <Can permission="requests.decide">
-            {row.status === 'PENDING' ? (
-              <>
-                <Button variant="secondary" onClick={() => setAcceptTarget(row)}>
-                  {t('common.accept')}
-                </Button>
-                <Button variant="danger" onClick={() => reject.mutate(row.id)}>
-                  {t('common.reject')}
-                </Button>
-              </>
-            ) : null}
-            {row.status === 'REJECTED' ? (
-              <Button variant="secondary" onClick={() => reset.mutate(row.id)}>
-                {t('common.reset')}
+          {row.status === 'PENDING' && can('requests.verify') ? (
+            <Button variant="secondary" onClick={() => verify.mutate(row.id)}>
+              {t('common.verify')}
+            </Button>
+          ) : null}
+          {row.status === 'PENDING' && can('requests.approve') ? (
+            <Button variant="secondary" onClick={() => setAcceptTarget(row)}>
+              {t('common.accept')}
+            </Button>
+          ) : null}
+          {row.status === 'PENDING' && (can('requests.verify') || can('requests.approve')) ? (
+            <Button variant="danger" onClick={() => reject.mutate(row.id)}>
+              {t('common.reject')}
+            </Button>
+          ) : null}
+          {row.status === 'VERIFIED' && can('requests.approve') ? (
+            <>
+              <Button variant="secondary" onClick={() => setAcceptTarget(row)}>
+                {t('common.accept')}
               </Button>
-            ) : null}
-          </Can>
+              <Button variant="danger" onClick={() => reject.mutate(row.id)}>
+                {t('common.reject')}
+              </Button>
+            </>
+          ) : null}
+          {row.status === 'REJECTED' && (can('requests.verify') || can('requests.approve')) ? (
+            <Button variant="secondary" onClick={() => reset.mutate(row.id)}>
+              {t('common.reset')}
+            </Button>
+          ) : null}
           {row.status === 'ACCEPTED' ? (
             <Button variant="secondary" onClick={() => downloadPdf.mutate(row.id)} disabled={downloadPdf.isPending}>
               {t('common.downloadLetter')}
@@ -249,6 +327,7 @@ export function AssignmentRequestsPage() {
       <Select value={status} onChange={(e) => setStatus(e.target.value)} className="max-w-40">
         <option value="">{t('common.all')}</option>
         <option value="PENDING">{t('requestStatus.PENDING')}</option>
+        <option value="VERIFIED">{t('requestStatus.VERIFIED')}</option>
         <option value="ACCEPTED">{t('requestStatus.ACCEPTED')}</option>
         <option value="REJECTED">{t('requestStatus.REJECTED')}</option>
       </Select>

@@ -34,6 +34,7 @@
   "common.status": "الحالة",
   "common.close": "إغلاق",
   "common.accept": "قبول",
+  "common.verify": "تحقق",
   "common.reject": "رفض",
   "common.reset": "إعادة تعيين",
   "common.end": "إنهاء",
@@ -50,8 +51,10 @@
   "auth.welcome": "الدخول إلى فضاء GLO",
 
   "role.SUPER_ADMIN": "مدير جهوي عام",
-  "role.DEPARTMENT_ADMIN": "مدير مديرية إقليمية",
+  "role.DP_AGENT": "ممثل المديرية الإقليمية",
   "role.ESTABLISHMENT_MANAGER": "مدير مؤسسة",
+  "role.AREF_VALIDATOR": "مسؤول الأكاديمية الجهوية",
+  "role.AREF_DIRECTOR": "مدير الأكاديمية الجهوية",
 
   "department.code": "الرمز",
   "department.name_fr": "الاسم (فرنسية)",
@@ -99,8 +102,21 @@
   "request.decision_date": "تاريخ القرار",
   "request.status": "الحالة",
   "request.new": "طلب جديد",
+  "request.documents": "الوثائق الممسوحة",
+  "request.addDocument": "إضافة وثيقة",
+  "request.verified_at": "تاريخ التحقق",
+
+  "document.type": "نوع الوثيقة",
+  "document.file": "الملف",
+  "documentType.ASSIGNMENT_ORDER": "قرار التخصيص",
+  "documentType.COMMITTEE_MINUTES": "محضر اللجنة",
+  "documentType.COMMITMENT": "التزام",
+  "documentType.INSPECTION_CARD": "بطاقة المعاينة",
+  "documentType.NOTIFICATION": "إشعار",
+  "documentType.OTHER": "أخرى",
 
   "requestStatus.PENDING": "في طور المعالجة",
+  "requestStatus.VERIFIED": "محقق",
   "requestStatus.ACCEPTED": "مقبول",
   "requestStatus.REJECTED": "مرفوض",
 

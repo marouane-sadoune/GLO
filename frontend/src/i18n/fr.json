@@ -34,6 +34,7 @@
   "common.status": "Statut",
   "common.close": "Fermer",
   "common.accept": "Accepter",
+  "common.verify": "Vérifier",
   "common.reject": "Rejeter",
   "common.reset": "Réinitialiser",
   "common.end": "Mettre fin",
@@ -50,8 +51,10 @@
   "auth.welcome": "Connectez-vous à votre espace GLO",
 
   "role.SUPER_ADMIN": "Super Administrateur",
-  "role.DEPARTMENT_ADMIN": "Administrateur Provincial",
+  "role.DP_AGENT": "Agent DP",
   "role.ESTABLISHMENT_MANAGER": "Gestionnaire d'Établissement",
+  "role.AREF_VALIDATOR": "Validateur AREF",
+  "role.AREF_DIRECTOR": "Directeur AREF",
 
   "department.code": "Code",
   "department.name_fr": "Nom (FR)",
@@ -99,8 +102,21 @@
   "request.decision_date": "Décidée le",
   "request.status": "Statut",
   "request.new": "Nouvelle demande",
+  "request.documents": "Documents scannés",
+  "request.addDocument": "Ajouter un document",
+  "request.verified_at": "Vérifiée le",
+
+  "document.type": "Type de document",
+  "document.file": "Fichier",
+  "documentType.ASSIGNMENT_ORDER": "Arrêté d'affectation",
+  "documentType.COMMITTEE_MINUTES": "Procès-verbal de commission",
+  "documentType.COMMITMENT": "Engagement",
+  "documentType.INSPECTION_CARD": "Fiche de constat",
+  "documentType.NOTIFICATION": "Notification",
+  "documentType.OTHER": "Autre",
 
   "requestStatus.PENDING": "En attente",
+  "requestStatus.VERIFIED": "Vérifié",
   "requestStatus.ACCEPTED": "Accepté",
   "requestStatus.REJECTED": "Rejeté",
 
