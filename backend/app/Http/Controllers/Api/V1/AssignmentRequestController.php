@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\V1\AcceptAssignmentRequestRequest;
 use App\Http\Requests\Api\V1\RejectAssignmentRequestRequest;
 use App\Http\Requests\Api\V1\StoreAssignmentRequestRequest;
+use App\Http\Requests\Api\V1\VerifyAssignmentRequestRequest;
 use App\Http\Resources\AssignmentRequestResource;
 use App\Http\Resources\OccupationResource;
 use App\Models\AssignmentRequest;
@@ -83,9 +84,20 @@ class AssignmentRequestController extends Controller
             ->download("housing-approval-{$model->id}.pdf");
     }
 
+    public function verify(VerifyAssignmentRequestRequest $request, int $assignmentRequest): AssignmentRequestResource
+    {
+        $this->authorize('verify', AssignmentRequest::class);
+
+        $model = AssignmentRequest::visibleTo($request->user())->findOrFail($assignmentRequest);
+
+        $updated = $this->service->verify($model, $request->user(), $request->validated()['notes'] ?? null);
+
+        return AssignmentRequestResource::make($updated->fresh(['logement', 'occupant']));
+    }
+
     public function accept(AcceptAssignmentRequestRequest $request, int $assignmentRequest): JsonResponse
     {
-        $this->authorize('decide', AssignmentRequest::class);
+        $this->authorize('approve', AssignmentRequest::class);
 
         $model = AssignmentRequest::visibleTo($request->user())->findOrFail($assignmentRequest);
 

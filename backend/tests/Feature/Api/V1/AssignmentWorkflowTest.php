@@ -90,6 +90,72 @@ class AssignmentWorkflowTest extends TestCase
             ->assertForbidden();
     }
 
+    public function test_aref_validator_verifies_a_pending_request(): void
+    {
+        $request = AssignmentRequest::factory()->create();
+        $validator = User::factory()->arefValidator()->create();
+
+        $this->actingAsUser($validator)
+            ->fromFrontend()
+            ->postJson("/api/v1/assignment-requests/{$request->id}/verify")
+            ->assertOk()
+            ->assertJsonPath('data.status', RequestStatus::VERIFIED->value);
+    }
+
+    public function test_aref_director_cannot_approve_an_unverified_request(): void
+    {
+        $request = AssignmentRequest::factory()->create();
+        $director = User::factory()->arefDirector()->create();
+
+        $this->actingAsUser($director)
+            ->fromFrontend()
+            ->postJson("/api/v1/assignment-requests/{$request->id}/accept", [
+                'assignment_type' => AssignmentType::MANDATORY->value,
+                'assignment_date' => now()->toDateString(),
+                'start_date' => now()->toDateString(),
+            ])
+            ->assertUnprocessable();
+    }
+
+    public function test_aref_director_approves_a_verified_request_and_occupies_the_housing(): void
+    {
+        $logement = Logement::factory()->create();
+        $occupant = Occupant::factory()->create();
+        $request = AssignmentRequest::factory()->for($logement)->for($occupant)->create([
+            'status' => RequestStatus::VERIFIED->value,
+            'verified_at' => now()->toDateString(),
+            'verified_by' => User::factory()->arefValidator()->create()->id,
+        ]);
+        $director = User::factory()->arefDirector()->create();
+
+        $this->actingAsUser($director)
+            ->fromFrontend()
+            ->postJson("/api/v1/assignment-requests/{$request->id}/accept", [
+                'assignment_type' => AssignmentType::MANDATORY->value,
+                'assignment_date' => now()->toDateString(),
+                'start_date' => now()->toDateString(),
+            ])
+            ->assertOk()
+            ->assertJsonPath('data.status', RequestStatus::ACCEPTED->value);
+
+        $this->assertSame(HousingStatus::OCCUPIED, $logement->fresh()->housing_status);
+    }
+
+    public function test_aref_validator_cannot_approve(): void
+    {
+        $request = AssignmentRequest::factory()->create(['status' => RequestStatus::VERIFIED->value]);
+        $validator = User::factory()->arefValidator()->create();
+
+        $this->actingAsUser($validator)
+            ->fromFrontend()
+            ->postJson("/api/v1/assignment-requests/{$request->id}/accept", [
+                'assignment_type' => AssignmentType::MANDATORY->value,
+                'assignment_date' => now()->toDateString(),
+                'start_date' => now()->toDateString(),
+            ])
+            ->assertForbidden();
+    }
+
     public function test_accepting_a_request_for_an_already_occupied_housing_is_rejected(): void
     {
         $logement = Logement::factory()->create();

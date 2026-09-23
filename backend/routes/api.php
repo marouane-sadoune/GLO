@@ -34,6 +34,8 @@ Route::prefix('v1')->group(function (): void {
             ->only(['index', 'show', 'store']);
         Route::get('/assignment-requests/{assignmentRequest}/pdf', [AssignmentRequestController::class, 'pdf'])
             ->name('assignment-requests.pdf');
+        Route::post('/assignment-requests/{assignmentRequest}/verify', [AssignmentRequestController::class, 'verify'])
+            ->name('assignment-requests.verify');
         Route::post('/assignment-requests/{assignmentRequest}/accept', [AssignmentRequestController::class, 'accept'])
             ->name('assignment-requests.accept');
         Route::post('/assignment-requests/{assignmentRequest}/reject', [AssignmentRequestController::class, 'reject'])

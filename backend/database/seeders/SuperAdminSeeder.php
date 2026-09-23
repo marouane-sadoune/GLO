@@ -46,17 +46,17 @@ class SuperAdminSeeder extends Seeder
             ],
         );
 
-        $departmentAdmin = User::updateOrCreate(
-            ['email' => 'department.admin@glo.ma'],
+        $dpAgent = User::updateOrCreate(
+            ['email' => 'dp.agent@glo.ma'],
             [
-                'name' => 'Department Admin Demo',
+                'name' => 'DP Agent Demo',
                 'password' => Hash::make('password'),
                 'department_id' => $department->id,
                 'establishment_id' => null,
                 'active' => true,
             ],
         );
-        $departmentAdmin->syncRoles([UserRole::DEPARTMENT_ADMIN->value]);
+        $dpAgent->syncRoles([UserRole::DP_AGENT->value]);
 
         $establishmentManager = User::updateOrCreate(
             ['email' => 'establishment.manager@glo.ma'],
@@ -69,5 +69,29 @@ class SuperAdminSeeder extends Seeder
             ],
         );
         $establishmentManager->syncRoles([UserRole::ESTABLISHMENT_MANAGER->value]);
+
+        $arefValidator = User::updateOrCreate(
+            ['email' => 'aref.validator@glo.ma'],
+            [
+                'name' => 'AREF Validator Demo',
+                'password' => Hash::make('password'),
+                'department_id' => null,
+                'establishment_id' => null,
+                'active' => true,
+            ],
+        );
+        $arefValidator->syncRoles([UserRole::AREF_VALIDATOR->value]);
+
+        $arefDirector = User::updateOrCreate(
+            ['email' => 'aref.director@glo.ma'],
+            [
+                'name' => 'AREF Director Demo',
+                'password' => Hash::make('password'),
+                'department_id' => null,
+                'establishment_id' => null,
+                'active' => true,
+            ],
+        );
+        $arefDirector->syncRoles([UserRole::AREF_DIRECTOR->value]);
     }
 }

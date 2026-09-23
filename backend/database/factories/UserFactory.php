@@ -59,7 +59,7 @@ class UserFactory extends Factory
             'department_id' => $department?->id ?? Department::factory(),
             'establishment_id' => null,
         ])->afterCreating(function (User $user): void {
-            $user->assignRole(UserRole::DEPARTMENT_ADMIN->value);
+            $user->assignRole(UserRole::DP_AGENT->value);
         });
     }
 
@@ -71,6 +71,20 @@ class UserFactory extends Factory
             $user->department_id = $establishment->department_id;
         })->afterCreating(function (User $user): void {
             $user->assignRole(UserRole::ESTABLISHMENT_MANAGER->value);
+        });
+    }
+
+    public function arefValidator(): static
+    {
+        return $this->afterCreating(function (User $user): void {
+            $user->assignRole(UserRole::AREF_VALIDATOR->value);
+        });
+    }
+
+    public function arefDirector(): static
+    {
+        return $this->afterCreating(function (User $user): void {
+            $user->assignRole(UserRole::AREF_DIRECTOR->value);
         });
     }
 

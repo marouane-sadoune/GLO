@@ -22,6 +22,8 @@ class AssignmentRequestResource extends JsonResource
             'occupant_id' => $this->occupant_id,
             'status' => $this->status?->value,
             'submitted_at' => $this->submitted_at?->toDateString(),
+            'verified_at' => $this->verified_at?->toDateString(),
+            'verified_by' => $this->verified_by,
             'decision_date' => $this->decision_date?->toDateString(),
             'decided_by' => $this->decided_by,
             'notes' => $this->notes,

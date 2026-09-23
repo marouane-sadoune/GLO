@@ -72,7 +72,7 @@ class UserTest extends TestCase
             ->putJson("/api/v1/users/{$target->id}", [
                 'name' => $target->name,
                 'email' => $target->email,
-                'role' => 'DEPARTMENT_ADMIN',
+                'role' => 'DP_AGENT',
                 'department_id' => $department->id,
                 'active' => false,
             ])

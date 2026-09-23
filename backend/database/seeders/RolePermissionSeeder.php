@@ -35,7 +35,8 @@ class RolePermissionSeeder extends Seeder
             'occupants.delete',
             'requests.view',
             'requests.create',
-            'requests.decide',
+            'requests.verify',
+            'requests.approve',
             'occupations.view',
             'occupations.manage',
             'documents.view',
@@ -58,9 +59,9 @@ class RolePermissionSeeder extends Seeder
         $superAdmin = Role::firstOrCreate(['name' => UserRole::SUPER_ADMIN->value, 'guard_name' => 'web']);
         $superAdmin->syncPermissions(Permission::all());
 
-        // 2. Department Admin role
-        $deptAdmin = Role::firstOrCreate(['name' => UserRole::DEPARTMENT_ADMIN->value, 'guard_name' => 'web']);
-        $deptAdmin->syncPermissions([
+        // 2. DP Agent role (province-scoped: submits, never decides)
+        $dpAgent = Role::firstOrCreate(['name' => UserRole::DP_AGENT->value, 'guard_name' => 'web']);
+        $dpAgent->syncPermissions([
             'departments.view',
             'establishments.view',
             'establishments.create',
@@ -86,7 +87,7 @@ class RolePermissionSeeder extends Seeder
             'exports.run',
         ]);
 
-        // 3. Establishment Manager role
+        // 3. Establishment Manager role (single-establishment data entry)
         $estManager = Role::firstOrCreate(['name' => UserRole::ESTABLISHMENT_MANAGER->value, 'guard_name' => 'web']);
         $estManager->syncPermissions([
             'departments.view',
@@ -105,6 +106,40 @@ class RolePermissionSeeder extends Seeder
             'documents.upload',
             'vacations.view',
             'vacations.create',
+            'history.view',
+            'stats.view',
+            'exports.run',
+        ]);
+
+        // 4. AREF Validator role (region-wide: reviews dossiers, verifies or rejects)
+        $arefValidator = Role::firstOrCreate(['name' => UserRole::AREF_VALIDATOR->value, 'guard_name' => 'web']);
+        $arefValidator->syncPermissions([
+            'departments.view',
+            'establishments.view',
+            'logements.view',
+            'occupants.view',
+            'requests.view',
+            'requests.verify',
+            'occupations.view',
+            'documents.view',
+            'vacations.view',
+            'history.view',
+            'stats.view',
+            'exports.run',
+        ]);
+
+        // 5. AREF Director role (region-wide: final approval + signed PDF)
+        $arefDirector = Role::firstOrCreate(['name' => UserRole::AREF_DIRECTOR->value, 'guard_name' => 'web']);
+        $arefDirector->syncPermissions([
+            'departments.view',
+            'establishments.view',
+            'logements.view',
+            'occupants.view',
+            'requests.view',
+            'requests.approve',
+            'occupations.view',
+            'documents.view',
+            'vacations.view',
             'history.view',
             'stats.view',
             'exports.run',

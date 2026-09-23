@@ -25,7 +25,7 @@ class UpdateUserRequest extends FormRequest
             'role' => ['required', Rule::enum(UserRole::class)],
             'department_id' => [
                 'nullable', 'integer', 'exists:departments,id',
-                Rule::requiredIf($this->input('role') !== UserRole::SUPER_ADMIN->value),
+                Rule::requiredIf(fn () => ! (UserRole::tryFrom((string) $this->input('role'))?->isRegionWide() ?? false)),
             ],
             'establishment_id' => [
                 'nullable', 'integer', 'exists:establishments,id',

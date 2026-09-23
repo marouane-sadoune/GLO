@@ -53,7 +53,7 @@ class AuthenticationTest extends TestCase
                 ],
             ]);
 
-        $this->assertContains('requests.decide', $response->json('data.permissions'));
+        $this->assertContains('requests.approve', $response->json('data.permissions'));
         $this->assertAuthenticatedAs($user);
         $this->assertNotNull($user->fresh()->last_login_at);
     }
@@ -106,7 +106,7 @@ class AuthenticationTest extends TestCase
             ->getJson('/api/v1/me')
             ->assertOk()
             ->assertJsonPath('data.id', $user->id)
-            ->assertJsonPath('data.role', UserRole::DEPARTMENT_ADMIN->value)
+            ->assertJsonPath('data.role', UserRole::DP_AGENT->value)
             ->assertJsonPath('data.department_id', $user->department_id);
     }
 
