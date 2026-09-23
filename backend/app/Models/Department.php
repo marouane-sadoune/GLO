@@ -41,9 +41,8 @@ class Department extends Model implements ScopesVisibility
      */
     public function scopeVisibleTo(Builder $query, User $user): Builder
     {
-        return match ($user->roleEnum()) {
-            UserRole::SUPER_ADMIN => $query,
-            default => $query->where('id', $user->department_id),
-        };
+        return $user->roleEnum()?->isRegionWide()
+            ? $query
+            : $query->where('id', $user->department_id);
     }
 }

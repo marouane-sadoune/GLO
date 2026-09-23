@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Enums\AuditAction;
 use App\Enums\RequestStatus;
+use App\Enums\UserRole;
 use App\Models\AssignmentRequest;
 use App\Models\Occupation;
 use App\Models\User;
@@ -20,9 +21,45 @@ class AssignmentRequestService
     ) {}
 
     /**
+     * First review stage (AREF_VALIDATOR): marks a PENDING dossier VERIFIED
+     * so it can move on to the director's final approval.
+     */
+    public function verify(AssignmentRequest $request, User $verifier, ?string $notes = null): AssignmentRequest
+    {
+        return DB::transaction(function () use ($request, $verifier, $notes) {
+            $request = AssignmentRequest::whereKey($request->id)->lockForUpdate()->firstOrFail();
+
+            if ($request->status !== RequestStatus::PENDING) {
+                throw ValidationException::withMessages([
+                    'status' => ['Seule une demande en attente peut être vérifiée.'],
+                ]);
+            }
+
+            Model::withoutEvents(fn () => $request->forceFill([
+                'status' => RequestStatus::VERIFIED->value,
+                'verified_at' => now()->toDateString(),
+                'verified_by' => $verifier->id,
+                'notes' => $notes ?? $request->notes,
+            ])->save());
+
+            $this->auditLogger->log(
+                action: AuditAction::REQUEST_VERIFIED,
+                subject: $request,
+                newValues: $request->only(['status', 'verified_at', 'verified_by', 'notes']),
+                logementId: $request->logement_id,
+            );
+
+            return $request;
+        });
+    }
+
+    /**
      * Accepting settles this request and starts the occupation, but per AMB-05
      * never silently rejects rival PENDING requests on the same housing — they
      * come back for the caller to reject explicitly in a second call.
+     *
+     * A VERIFIED dossier is required, except for SUPER_ADMIN who may still
+     * fast-track straight from PENDING — the one role with unrestricted power.
      *
      * @param  array{assignment_date: string, assignment_type: string, start_date: string, notes?: string|null}  $occupationAttributes
      * @return array{request: AssignmentRequest, occupation: Occupation, rival_requests: Collection<int, AssignmentRequest>}
@@ -32,9 +69,13 @@ class AssignmentRequestService
         return DB::transaction(function () use ($request, $decider, $occupationAttributes) {
             $request = AssignmentRequest::whereKey($request->id)->lockForUpdate()->firstOrFail();
 
-            if ($request->status !== RequestStatus::PENDING) {
+            $validStatuses = $decider->roleEnum() === UserRole::SUPER_ADMIN
+                ? [RequestStatus::PENDING, RequestStatus::VERIFIED]
+                : [RequestStatus::VERIFIED];
+
+            if (! in_array($request->status, $validStatuses, true)) {
                 throw ValidationException::withMessages([
-                    'status' => ['Cette demande a déjà été traitée.'],
+                    'status' => ['Cette demande doit être vérifiée avant approbation.'],
                 ]);
             }
 
@@ -76,7 +117,7 @@ class AssignmentRequestService
         return DB::transaction(function () use ($request, $decider, $notes) {
             $request = AssignmentRequest::whereKey($request->id)->lockForUpdate()->firstOrFail();
 
-            if ($request->status !== RequestStatus::PENDING) {
+            if (! in_array($request->status, [RequestStatus::PENDING, RequestStatus::VERIFIED], true)) {
                 throw ValidationException::withMessages([
                     'status' => ['Cette demande a déjà été traitée.'],
                 ]);
@@ -118,6 +159,8 @@ class AssignmentRequestService
 
             Model::withoutEvents(fn () => $request->forceFill([
                 'status' => RequestStatus::PENDING->value,
+                'verified_at' => null,
+                'verified_by' => null,
                 'decision_date' => null,
                 'decided_by' => null,
             ])->save());

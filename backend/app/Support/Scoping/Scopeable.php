@@ -19,10 +19,12 @@ trait Scopeable
 {
     public function scopeVisibleTo(Builder $query, User $user): Builder
     {
-        return match ($user->roleEnum()) {
-            UserRole::SUPER_ADMIN => $query,
-            UserRole::DEPARTMENT_ADMIN => $this->scopeToDepartment($query, $user->department_id),
-            UserRole::ESTABLISHMENT_MANAGER => $this->scopeToEstablishment($query, $user->establishment_id),
+        $role = $user->roleEnum();
+
+        return match (true) {
+            $role?->isRegionWide() => $query,
+            $role === UserRole::DP_AGENT => $this->scopeToDepartment($query, $user->department_id),
+            $role === UserRole::ESTABLISHMENT_MANAGER => $this->scopeToEstablishment($query, $user->establishment_id),
             default => $query->whereRaw('1 = 0'),
         };
     }

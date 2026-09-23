@@ -21,6 +21,8 @@ class AssignmentRequest extends Model implements ScopesVisibility
         'occupant_id',
         'status',
         'submitted_at',
+        'verified_at',
+        'verified_by',
         'decision_date',
         'decided_by',
         'notes',
@@ -31,6 +33,7 @@ class AssignmentRequest extends Model implements ScopesVisibility
         return [
             'status' => RequestStatus::class,
             'submitted_at' => 'date',
+            'verified_at' => 'date',
             'decision_date' => 'date',
         ];
     }
@@ -48,6 +51,11 @@ class AssignmentRequest extends Model implements ScopesVisibility
     public function decidedBy(): BelongsTo
     {
         return $this->belongsTo(User::class, 'decided_by');
+    }
+
+    public function verifiedBy(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'verified_by');
     }
 
     public function occupation(): HasOne
